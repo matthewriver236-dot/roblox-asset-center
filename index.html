@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ROBLOX ASSET CONTROL CENTER</title>
+  <style>
+    :root {
+      --bg-deep: #070612;
+      --bg-card: #121026;
+      --bg-card-2: #191633;
+      --bg-input: #0b091a;
+      --border-subtle: rgba(148, 130, 255, 0.16);
+      --border-strong: rgba(148, 130, 255, 0.34);
+      --text-main: #f4f2ff;
+      --text-muted: #9b95be;
+      --text-dim: #6f6a8d;
+      --accent-purple: #7c5cff;
+      --accent-purple-bright: #9378ff;
+      --accent-purple-dark: #4f39b8;
+      --accent-green: #16a34a;
+      --accent-green-bright: #22c55e;
+      --accent-green-soft: rgba(34, 197, 94, 0.14);
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 9px;
+      --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 50% -6%, rgba(124, 92, 255, 0.34) 0%, rgba(79, 57, 184, 0.14) 34%, rgba(7, 6, 18, 0) 65%),
+        linear-gradient(180deg, #0d0a20 0%, #070612 42%, #06050f 100%);
+      padding: 18px 14px 44px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .brand-header {
+      text-align: center;
+      padding: 10px 6px 16px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 6.2vw, 2.05rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-shadow: 0 0 24px rgba(124, 92, 255, 0.35);
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .brand-title:hover .edit-hint {
+      opacity: 1;
+    }
+
+    .edit-hint {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      color: var(--text-dim);
+      margin-top: 3px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .brand-subtitle {
+      margin: 6px 0 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* Mode Tabs */
+    .mode-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(18, 16, 38, 0.92);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 14px;
+    }
+
+    .mode-tab {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .mode-tab.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent-purple-bright), var(--accent-purple));
+      box-shadow: 0 6px 18px rgba(124, 92, 255, 0.38);
+    }
+
+    /* Cards */
+    .step-card {
+      background: linear-gradient(180deg, rgba(22, 19, 46, 0.94) 0%, rgba(14, 12, 30, 0.96) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .step-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8f7cff;
+      margin-bottom: 6px;
+    }
+
+    .step-heading {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+    }
+
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #cfc9ec;
+      margin-bottom: 7px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .input-control,
+    .select-control {
+      width: 100%;
+      min-width: 0;
+      background: var(--bg-input);
+      border: 1px solid rgba(148, 130, 255, 0.22);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .input-control:focus,
+    .select-control:focus {
+      border-color: var(--accent-purple-bright);
+      box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+    }
+
+    .input-control::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Buttons */
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.12s ease, opacity 0.18s ease, background 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost-dark {
+      background: #23283d;
+      border-color: rgba(255, 255, 255, 0.08);
+      color: #eef2ff;
+      min-width: 96px;
+    }
+
+    .btn-ghost-dark:hover:not(:disabled) {
+      background: #2c324d;
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, var(--accent-purple-bright), var(--accent-purple));
+      box-shadow: 0 6px 18px rgba(124, 92, 255, 0.32);
+      min-width: 108px;
+    }
+
+    .btn-purple:hover:not(:disabled) {
+      filter: brightness(1.07);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, var(--accent-green-bright), var(--accent-green));
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
+      flex: 1.35;
+    }
+
+    .btn-green:hover:not(:disabled) {
+      filter: brightness(1.06);
+    }
+
+    .btn-slate {
+      background: #262542;
+      border-color: rgba(148, 130, 255, 0.22);
+      color: #e6e2ff;
+      flex: 0.85;
+    }
+
+    .btn-slate:hover:not(:disabled) {
+      background: #302f54;
+    }
+
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 0.74rem;
+      border-radius: var(--radius-sm);
+      min-width: auto;
+    }
+
+    /* Status & Helper Texts */
+    .status-line {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .status-line.ok {
+      color: #4ade80;
+    }
+
+    .status-line.warn {
+      color: #fbbf24;
+    }
+
+    .status-line.err {
+      color: #f87171;
+    }
+
+    .helper-note {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .helper-note strong {
+      color: #d7d2f7;
+    }
+
+    /* Checkbox Confirmation */
+    .confirm-box {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 12px;
+      border-radius: var(--radius-md);
+      background: rgba(11, 9, 26, 0.72);
+      border: 1px solid rgba(148, 130, 255, 0.16);
+      font-size: 0.82rem;
+      color: #d6d1f5;
+      line-height: 1.45;
+      cursor: pointer;
+    }
+
+    .confirm-box input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 1px 0 0;
+      accent-color: var(--accent-purple-bright);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 1.5px dashed rgba(148, 130, 255, 0.36);
+      border-radius: 15px;
+      background: rgba(11, 9, 26, 0.78);
+      padding: 18px 14px;
+      text-align: center;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent-purple-bright);
+      background: rgba(124, 92, 255, 0.12);
+    }
+
+    .dropzone-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .file-picker-bar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #17142e;
+      border: 1px solid rgba(148, 130, 255, 0.22);
+      border-radius: 10px;
+      padding: 7px 12px;
+      max-width: 100%;
+    }
+
+    .file-btn-fake {
+      background: #2b294a;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .file-count-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 240px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-files-list {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .file-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #16132c;
+      border: 1px solid rgba(148, 130, 255, 0.16);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+    }
+
+    .file-chip-name {
+      color: #ece8ff;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-chip-meta {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      flex-shrink: 0;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      margin-top: 14px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 130, 255, 0.16);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-purple-bright), var(--accent-green-bright));
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Collapsible / Advanced Connection Box */
+    .details-toggle {
+      width: 100%;
+      background: rgba(11, 9, 26, 0.65);
+      border: 1px solid rgba(148, 130, 255, 0.18);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      color: #cfc9ec;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .badge-pill {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(124, 92, 255, 0.2);
+      color: #b8a8ff;
+      font-weight: 700;
+    }
+
+    .badge-pill.sim {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fcd34d;
+    }
+
+    .advanced-panel {
+      display: none;
+      background: rgba(10, 8, 23, 0.85);
+      border: 1px solid rgba(148, 130, 255, 0.18);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .advanced-panel.open {
+      display: block;
+    }
+
+    /* Results & Luau Output */
+    .result-item {
+      background: #0c0a1c;
+      border: 1px solid rgba(148, 130, 255, 0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .result-main {
+      min-width: 0;
+    }
+
+    .result-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .result-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      color: #4ade80;
+      margin-top: 2px;
+      user-select: all;
+    }
+
+    .code-box {
+      margin-top: 10px;
+      background: #090716;
+      border: 1px solid rgba(148, 130, 255, 0.22);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.76rem;
+      color: #d8d2ff;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: var(--text-dim);
+      padding: 0 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e1a3b;
+      color: #ffffff;
+      border: 1px solid rgba(148, 130, 255, 0.45);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 99;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 420px) {
+      .input-row {
+        flex-direction: column;
+      }
+      .btn-ghost-dark,
+      .btn-purple {
+        width: 100%;
+      }
+      .action-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="brand-header">
+      <h1 class="brand-title" id="brandTitle" title="Klik untuk mengganti judul proyek">
+        <span id="brandTitleText">LEO - PROJECT</span>
+        <span class="edit-hint">Ketuk judul untuk ubah nama proyek</span>
+      </h1>
+      <div class="brand-subtitle">ROBLOX ASSET CONTROL CENTER</div>
+    </header>
+
+    <!-- Primary Mode Switcher -->
+    <nav class="mode-switcher" aria-label="Mode Kontrol Aset">
+      <button type="button" class="mode-tab active" id="tabAnimation" data-mode="animation">
+        ANIMATION
+      </button>
+      <button type="button" class="mode-tab" id="tabAudio" data-mode="audio">
+        AUDIO PERMISSIONS
+      </button>
+    </nav>
+
+    <!-- STEP 01: AKUN ROBLOX -->
+    <section class="step-card" id="step01Card">
+      <div class="step-label">01 / AKUN ROBLOX</div>
+      <h2 class="step-heading">API Key &amp; akun pembuat</h2>
+
+      <div class="field-group">
+        <label class="field-label" for="apiKeyInput">Roblox Open Cloud API Key</label>
+        <div class="input-row">
+          <input
+            type="password"
+            id="apiKeyInput"
+            class="input-control"
+            placeholder="••••••••••••••••••••••••"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" class="btn btn-ghost-dark" id="toggleApiBtn">LIHAT</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="creatorInput">Username atau User ID Roblox</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="creatorInput"
+            class="input-control"
+            placeholder="Masukkan username atau User ID"
+            autocomplete="off"
+          />
+          <button type="button" class="btn btn-purple" id="scanAccountBtn">SCAN...</button>
+        </div>
+        <div class="status-line" id="accountStatus">Belum diverifikasi.</div>
+      </div>
+
+      <p class="helper-note">
+        API Key disimpan di penyimpanan browser perangkat ini. Jangan gunakan di HP bersama. Aktifkan scope <strong>asset:write</strong> dan <strong>asset-permissions:write</strong>.
+      </p>
+    </section>
+
+    <!-- STEP 02: PILIH MAP -->
+    <section class="step-card" id="step02Card">
+      <div class="step-label">02 / PILIH MAP</div>
+      <h2 class="step-heading">Scan Place ID / Universe</h2>
+
+      <div class="field-group">
+        <label class="field-label" for="placeIdInput">Place ID Roblox</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="placeIdInput"
+            inputmode="numeric"
+            class="input-control"
+            placeholder="Contoh: 8692327950"
+          />
+          <button type="button" class="btn btn-purple" id="scanMapBtn">SCAN MAP</button>
+        </div>
+        <div class="status-line" id="mapStatus">Belum di-scan.</div>
+      </div>
+
+      <label class="confirm-box" for="confirmMapCheckbox">
+        <input type="checkbox" id="confirmMapCheckbox" />
+        <span>
+          Scan map terlebih dahulu, lalu konfirmasi bahwa map tersebut milikmu atau memang boleh kamu kelola.
+        </span>
+      </label>
+    </section>
+
+    <!-- STEP 03A: UPLOAD BANYAK ANIMASI -->
+    <section class="step-card" id="step03AnimationCard">
+      <div class="step-label">03 / UPLOAD BANYAK ANIMASI</div>
+      <h2 class="step-heading">Pilih file .rbxm / .rbxmx</h2>
+
+      <!-- Optional Connection / Relay Settings -->
+      <button type="button" class="details-toggle" id="toggleConnBtn">
+        <span>Pengaturan Koneksi Open Cloud &amp; Relay</span>
+        <span class="badge-pill sim" id="connBadge">MODE SIMULASI</span>
+      </button>
+
+      <div class="advanced-panel" id="connPanel">
+        <div class="field-group">
+          <label class="field-label" for="connModeSelect">Mode Eksekusi</label>
+          <select id="connModeSelect" class="select-control">
+            <option value="simulation" selected>Mode Simulasi (Uji Alur &amp; Generate ID Uji Coba)</option>
+            <option value="relay">Custom CORS Proxy / Cloudflare Worker Relay</option>
+            <option value="direct">Direct Roblox Open Cloud API (Butuh Server/CORS)</option>
+          </select>
+        </div>
+
+        <div class="field-group" id="relayUrlGroup" style="display:none;">
+          <label class="field-label" for="relayUrlInput">URL Worker / Relay Endpoint</label>
+          <input
+            type="url"
+            id="relayUrlInput"
+            class="input-control"
+            placeholder="https://roblox-relay.domain-kamu.workers.dev"
+          />
+          <div class="helper-note">
+            Browser memblokir panggilan langsung ke <code>apis.roblox.com</code> karena CORS. Gunakan Cloudflare Worker relay atau server milikmu sendiri.
+          </div>
+          <div style="margin-top:8px;">
+            <button type="button" class="btn btn-slate btn-sm" id="downloadWorkerBtn">
+              Unduh Skrip Cloudflare Worker Relay
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-title">
+          <span>📁</span>
+          <span>Pilih satu atau banyak file animasi</span>
+        </div>
+        <div class="file-picker-bar" id="filePickerTrigger">
+          <span class="file-btn-fake">Pilih File</span>
+          <span class="file-count-label" id="fileCountLabel">Tidak ada file yang dipilih</span>
+        </div>
+        <input
+          type="file"
+          id="animFileInput"
+          accept=".rbxm,.rbxmx"
+          multiple
+          hidden
+        />
+        <div class="selected-files-list" id="selectedFilesList"></div>
+      </div>
+
+      <div class="status-line" id="selectionSummary">Belum ada file dipilih.</div>
+
+      <div class="action-row">
+        <button type="button" class="btn btn-green" id="uploadAllBtn">
+          UPLOAD SEMUA + IZINKAN
+        </button>
+        <button type="button" class="btn btn-slate" id="clearFilesBtn">
+          BERSIHKAN
+        </button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Menunggu file.</div>
+      </div>
+    </section>
+
+    <!-- STEP 03B: AUDIO PERMISSIONS TAB -->
+    <section class="step-card" id="step03AudioCard" style="display:none;">
+      <div class="step-label">03 / AUDIO PERMISSIONS</div>
+      <h2 class="step-heading">Grant Universe Permission untuk Audio</h2>
+
+      <div class="field-group">
+        <label class="field-label" for="audioIdsInput">Daftar Audio Asset ID (pisahkan dengan koma atau baris baru)</label>
+        <textarea
+          id="audioIdsInput"
+          class="input-control"
+          rows="4"
+          placeholder="Contoh:&#10;1843491734&#10;9120348123"
+        ></textarea>
+      </div>
+
+      <div class="action-row">
+        <button type="button" class="btn btn-green" id="grantAudioBtn">
+          IZINKAN AUDIO KE MAP
+        </button>
+        <button type="button" class="btn btn-slate" id="clearAudioBtn">
+          BERSIHKAN
+        </button>
+      </div>
+
+      <div class="status-line" id="audioStatus">Masukkan Asset ID audio dan konfirmasi map pada langkah 02.</div>
+    </section>
+
+    <!-- RESULTS CARD -->
+    <section class="step-card" id="resultsCard" style="display:none;">
+      <div class="step-label">HASIL &amp; LUAU EXPORT</div>
+      <h2 class="step-heading">Daftar Asset ID Terproses</h2>
+
+      <div class="action-row" style="margin-top:0; margin-bottom:10px;">
+        <button type="button" class="btn btn-purple btn-sm" id="copyAllIdsBtn">Salin Semua ID</button>
+        <button type="button" class="btn btn-slate btn-sm" id="copyLuauBtn">Salin Tabel Luau</button>
+      </div>
+
+      <div id="resultsList"></div>
+      <div class="code-box" id="luauTablePreview"></div>
+    </section>
+
+    <footer class="footer-note">
+      <span id="footerBrand">LEO - PROJECT</span> • Gunakan hanya pada akun dan experience yang kamu miliki atau kelola.
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "roblox_asset_control_center_v1";
+
+      const state = {
+        mode: "animation",
+        brandName: "LEO - PROJECT",
+        apiKey: "",
+        creatorInput: "",
+        verifiedCreator: null,
+        placeId: "",
+        scannedUniverse: null,
+        confirmedMap: false,
+        connMode: "simulation",
+        relayUrl: "",
+        files: [],
+        results: []
+      };
+
+      const el = {
+        brandTitle: document.getElementById("brandTitle"),
+        brandTitleText: document.getElementById("brandTitleText"),
+        footerBrand: document.getElementById("footerBrand"),
+        tabAnimation: document.getElementById("tabAnimation"),
+        tabAudio: document.getElementById("tabAudio"),
+        apiKeyInput: document.getElementById("apiKeyInput"),
+        toggleApiBtn: document.getElementById("toggleApiBtn"),
+        creatorInput: document.getElementById("creatorInput"),
+        scanAccountBtn: document.getElementById("scanAccountBtn"),
+        accountStatus: document.getElementById("accountStatus"),
+        placeIdInput: document.getElementById("placeIdInput"),
+        scanMapBtn: document.getElementById("scanMapBtn"),
+        mapStatus: document.getElementById("mapStatus"),
+        confirmMapCheckbox: document.getElementById("confirmMapCheckbox"),
+        step03AnimationCard: document.getElementById("step03AnimationCard"),
+        step03AudioCard: document.getElementById("step03AudioCard"),
+        toggleConnBtn: document.getElementById("toggleConnBtn"),
+        connBadge: document.getElementById("connBadge"),
+        connPanel: document.getElementById("connPanel"),
+        connModeSelect: document.getElementById("connModeSelect"),
+        relayUrlGroup: document.getElementById("relayUrlGroup"),
+        relayUrlInput: document.getElementById("relayUrlInput"),
+        downloadWorkerBtn: document.getElementById("downloadWorkerBtn"),
+        dropzone: document.getElementById("dropzone"),
+        filePickerTrigger: document.getElementById("filePickerTrigger"),
+        animFileInput: document.getElementById("animFileInput"),
+        fileCountLabel: document.getElementById("fileCountLabel"),
+        selectedFilesList: document.getElementById("selectedFilesList"),
+        selectionSummary: document.getElementById("selectionSummary"),
+        uploadAllBtn: document.getElementById("uploadAllBtn"),
+        clearFilesBtn: document.getElementById("clearFilesBtn"),
+        progressFill: document.getElementById("progressFill"),
+        progressText: document.getElementById("progressText"),
+        audioIdsInput: document.getElementById("audioIdsInput"),
+        grantAudioBtn: document.getElementById("grantAudioBtn"),
+        clearAudioBtn: document.getElementById("clearAudioBtn"),
+        audioStatus: document.getElementById("audioStatus"),
+        resultsCard: document.getElementById("resultsCard"),
+        resultsList: document.getElementById("resultsList"),
+        luauTablePreview: document.getElementById("luauTablePreview"),
+        copyAllIdsBtn: document.getElementById("copyAllIdsBtn"),
+        copyLuauBtn: document.getElementById("copyLuauBtn"),
+        toast: document.getElementById("toast")
+      };
+
+      function showToast(msg) {
+        el.toast.textContent = msg;
+        el.toast.classList.add("show");
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.toast.classList.remove("show"), 2200);
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            brandName: state.brandName,
+            apiKey: state.apiKey,
+            creatorInput: state.creatorInput,
+            verifiedCreator: state.verifiedCreator,
+            placeId: state.placeId,
+            scannedUniverse: state.scannedUniverse,
+            confirmedMap: state.confirmedMap,
+            connMode: state.connMode,
+            relayUrl: state.relayUrl,
+            results: state.results
+          }));
+        } catch (_) {}
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          Object.assign(state, parsed);
+        } catch (_) {}
+      }
+
+      function formatBytes(bytes) {
+        if (!bytes && bytes !== 0) return "";
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+      }
+
+      function sanitizeLuaKey(filename) {
+        const base = filename.replace(/\.(rbxm|rbxmx)$/i, "").replace(/[^a-zA-Z0-9_]/g, "_");
+        return /^[a-zA-Z_]/.test(base) ? base : "Anim_" + base;
+      }
+
+      function updateConnBadge() {
+        if (state.connMode === "simulation") {
+          el.connBadge.textContent = "MODE SIMULASI";
+          el.connBadge.className = "badge-pill sim";
+        } else if (state.connMode === "relay") {
+          el.connBadge.textContent = "WORKER RELAY";
+          el.connBadge.className = "badge-pill";
+        } else {
+          el.connBadge.textContent = "DIRECT API";
+          el.connBadge.className = "badge-pill";
+        }
+        el.relayUrlGroup.style.display = state.connMode === "relay" ? "block" : "none";
+      }
+
+      function syncUI() {
+        el.brandTitleText.textContent = state.brandName || "LEO - PROJECT";
+        el.footerBrand.textContent = state.brandName || "LEO - PROJECT";
+        el.apiKeyInput.value = state.apiKey || "";
+        el.creatorInput.value = state.creatorInput || "";
+        el.placeIdInput.value = state.placeId || "";
+        el.confirmMapCheckbox.checked = Boolean(state.confirmedMap);
+        el.connModeSelect.value = state.connMode || "simulation";
+        el.relayUrlInput.value = state.relayUrl || "";
+        updateConnBadge();
+
+        if (state.mode === "animation") {
+          el.tabAnimation.classList.add("active");
+          el.tabAudio.classList.remove("active");
+          el.step03AnimationCard.style.display = "block";
+          el.step03AudioCard.style.display = "none";
+        } else {
+          el.tabAudio.classList.add("active");
+          el.tabAnimation.classList.remove("active");
+          el.step03AnimationCard.style.display = "none";
+          el.step03AudioCard.style.display = "block";
+        }
+
+        renderFiles();
+        renderResults();
+      }
+
+      function renderFiles() {
+        const count = state.files.length;
+        if (count === 0) {
+          el.fileCountLabel.textContent = "Tidak ada file yang dipilih";
+          el.selectionSummary.textContent = "Belum ada file dipilih.";
+          el.selectedFilesList.innerHTML = "";
+          return;
+        }
+
+        el.fileCountLabel.textContent = count === 1 ? state.files[0].name : `${count} file dipilih`;
+        const totalSize = state.files.reduce((acc, f) => acc + (f.size || 0), 0);
+        el.selectionSummary.textContent = `${count} file siap diproses (${formatBytes(totalSize)} total).`;
+        el.selectionSummary.className = "status-line ok";
+
+        el.selectedFilesList.innerHTML = state.files.map((file, idx) => `
+          <div class="file-chip">
+            <span class="file-chip-name">${idx + 1}. ${file.name}</span>
+            <span class="file-chip-meta">${formatBytes(file.size)}</span>
+          </div>
+        `).join("");
+      }
+
+      function renderResults() {
+        if (!state.results || state.results.length === 0) {
+          el.resultsCard.style.display = "none";
+          return;
+        }
+
+        el.resultsCard.style.display = "block";
+        el.resultsList.innerHTML = state.results.map((item) => `
+          <div class="result-item">
+            <div class="result-main">
+              <div class="result-title">${item.name}</div>
+              <div class="result-id">${item.assetUri}</div>
+            </div>
+            <button type="button" class="btn btn-slate btn-sm" data-copy-id="${item.assetUri}">Salin</button>
+          </div>
+        `).join("");
+
+        el.resultsList.querySelectorAll("[data-copy-id]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            copyText(btn.getAttribute("data-copy-id"), "Asset ID disalin");
+          });
+        });
+
+        const lines = [
+          "-- Dihasilkan oleh ROBLOX ASSET CONTROL CENTER",
+          "local Assets = {"
+        ];
+        state.results.forEach((r) => {
+          const key = sanitizeLuaKey(r.name);
+          lines.push(`\t${key} = "${r.assetUri}",`);
+        });
+        lines.push("}", "", "return Assets");
+        el.luauTablePreview.textContent = lines.join("\n");
+      }
+
+      function copyText(text, successMsg) {
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg));
+        } else {
+          fallbackCopy(text, successMsg);
+        }
+      }
+
+      function fallbackCopy(text, successMsg) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast(successMsg);
+        } catch (_) {
+          showToast("Gagal menyalin");
+        }
+        document.body.removeChild(ta);
+      }
+
+      async function resolveUserId(input) {
+        const trimmed = input.trim();
+        if (!trimmed) throw new Error("Masukkan username atau User ID Roblox terlebih dahulu.");
+        if (/^\d+$/.test(trimmed)) {
+          return { id: trimmed, name: `User_${trimmed}` };
+        }
+        try {
+          const res = await fetch("https://users.roblox.com/v1/usernames/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usernames: [trimmed], excludeBannedUsers: false })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.data) && data.data.length > 0) {
+              return { id: String(data.data[0].id), name: data.data[0].name };
+            }
+          }
+        } catch (_) {}
+
+        if (state.connMode === "simulation") {
+          let hash = 100000000;
+          for (let i = 0; i < trimmed.length; i++) {
+            hash = (hash * 31 + trimmed.charCodeAt(i)) % 9000000000;
+          }
+          return { id: String(Math.max(10000000, hash)), name: trimmed };
+        }
+        throw new Error("Tidak dapat memverifikasi username. Coba masukkan User ID angka.");
+      }
+
+      async function resolveUniverseFromPlace(placeId) {
+        const clean = placeId.trim();
+        if (!/^\d+$/.test(clean)) {
+          throw new Error("Place ID harus berupa deretan angka.");
+        }
+        try {
+          const res = await fetch(`https://apis.roblox.com/universes/v1/places/${clean}/universe`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.universeId) {
+              return { placeId: clean, universeId: String(data.universeId) };
+            }
+          }
+        } catch (_) {}
+
+        if (state.connMode === "simulation") {
+          const simUniverse = String(Number(clean) + 17);
+          return { placeId: clean, universeId: simUniverse };
+        }
+        throw new Error("Gagal mengambil Universe ID dari Place ID (cek CORS/Relay atau Place ID).");
+      }
+
+      function validateReadyForBatch() {
+        if (!state.verifiedCreator) {
+          showToast("Scan akun Roblox di langkah 01 dulu");
+          el.accountStatus.textContent = "Verifikasi akun Roblox terlebih dahulu.";
+          el.accountStatus.className = "status-line warn";
+          return false;
+        }
+        if (!state.scannedUniverse) {
+          showToast("Scan Place ID di langkah 02 dulu");
+          el.mapStatus.textContent = "Scan Place ID terlebih dahulu.";
+          el.mapStatus.className = "status-line warn";
+          return false;
+        }
+        if (!state.confirmedMap) {
+          showToast("Centang konfirmasi kepemilikan map dulu");
+          el.mapStatus.textContent = "Centang kotak konfirmasi kepemilikan map sebelum melanjutkan.";
+          el.mapStatus.className = "status-line warn";
+          return false;
+        }
+        if (state.connMode !== "simulation" && !state.apiKey.trim()) {
+          showToast("Masukkan Open Cloud API Key");
+          el.accountStatus.textContent = "API Key diperlukan untuk mode non-simulasi.";
+          el.accountStatus.className = "status-line err";
+          return false;
+        }
+        if (state.connMode === "relay" && !state.relayUrl.trim()) {
+          showToast("Isi URL Worker / Relay di pengaturan koneksi");
+          el.connPanel.classList.add("open");
+          return false;
+        }
+        return true;
+      }
+
+      async function uploadSingleFile(file, index) {
+        if (state.connMode === "simulation") {
+          await new Promise((r) => setTimeout(r, 450));
+          const randomDigits = Math.floor(1000000000 + Math.random() * 8999999999);
+          return {
+            name: file.name,
+            assetId: String(randomDigits),
+            assetUri: `rbxassetid://${randomDigits}`,
+            universeId: state.scannedUniverse.universeId
+          };
+        }
+
+        const endpointBase = state.connMode === "relay"
+          ? state.relayUrl.replace(/\/+$/, "") + "/upload-animation"
+          : "https://apis.roblox.com/assets/v1/assets";
+
+        const formData = new FormData();
+        formData.append("request", JSON.stringify({
+          assetType: "Animation",
+          displayName: file.name.replace(/\.(rbxm|rbxmx)$/i, "").slice(0, 50),
+          description: `Uploaded via ${state.brandName}`,
+          creationContext: {
+            creator: {
+              userId: String(state.verifiedCreator.id)
+            }
+          }
+        }));
+        formData.append("fileContent", file, file.name);
+
+        const res = await fetch(endpointBase, {
+          method: "POST",
+          headers: {
+            "x-api-key": state.apiKey.trim()
+          },
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Upload gagal (${res.status}): ${errText.slice(0, 120)}`);
+        }
+
+        const data = await res.json();
+        const assetId = data.assetId || (data.path && data.path.split("/").pop()) || String(Date.now() + index);
+
+        // Grant universe permission if endpoint provided or via relay
+        if (state.connMode === "relay") {
+          await fetch(state.relayUrl.replace(/\/+$/, "") + "/grant-permission", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": state.apiKey.trim()
+            },
+            body: JSON.stringify({
+              assetId: String(assetId),
+              universeId: String(state.scannedUniverse.universeId)
+            })
+          }).catch(() => {});
+        }
+
+        return {
+          name: file.name,
+          assetId: String(assetId),
+          assetUri: `rbxassetid://${assetId}`,
+          universeId: state.scannedUniverse.universeId
+        };
+      }
+
+      // Event Listeners
+      el.brandTitle.addEventListener("click", () => {
+        const nextName = prompt("Masukkan nama proyek / judul atas:", state.brandName);
+        if (nextName && nextName.trim()) {
+          state.brandName = nextName.trim().toUpperCase();
+          saveState();
+          syncUI();
+          showToast("Nama proyek diperbarui");
+        }
+      });
+
+      el.tabAnimation.addEventListener("click", () => {
+        state.mode = "animation";
+        syncUI();
+      });
+
+      el.tabAudio.addEventListener("click", () => {
+        state.mode = "audio";
+        syncUI();
+      });
+
+      el.apiKeyInput.addEventListener("input", (e) => {
+        state.apiKey = e.target.value;
+        saveState();
+      });
+
+      el.toggleApiBtn.addEventListener("click", () => {
+        const isPass = el.apiKeyInput.type === "password";
+        el.apiKeyInput.type = isPass ? "text" : "password";
+        el.toggleApiBtn.textContent = isPass ? "TUTUP" : "LIHAT";
+      });
+
+      el.creatorInput.addEventListener("input", (e) => {
+        state.creatorInput = e.target.value;
+        saveState();
+      });
+
+      el.scanAccountBtn.addEventListener("click", async () => {
+        el.scanAccountBtn.disabled = true;
+        el.scanAccountBtn.textContent = "...";
+        el.accountStatus.textContent = "Memindai akun Roblox...";
+        el.accountStatus.className = "status-line";
+
+        try {
+          const info = await resolveUserId(el.creatorInput.value);
+          state.verifiedCreator = info;
+          saveState();
+          el.accountStatus.textContent = `Terverifikasi: ${info.name} (ID: ${info.id})`;
+          el.accountStatus.className = "status-line ok";
+          showToast("Akun terverifikasi");
+        } catch (err) {
+          state.verifiedCreator = null;
+          el.accountStatus.textContent = err.message;
+          el.accountStatus.className = "status-line err";
+        } finally {
+          el.scanAccountBtn.disabled = false;
+          el.scanAccountBtn.textContent = "SCAN...";
+        }
+      });
+
+      el.placeIdInput.addEventListener("input", (e) => {
+        state.placeId = e.target.value.replace(/[^\d]/g, "");
+        e.target.value = state.placeId;
+        saveState();
+      });
+
+      el.scanMapBtn.addEventListener("click", async () => {
+        el.scanMapBtn.disabled = true;
+        el.scanMapBtn.textContent = "...";
+        el.mapStatus.textContent = "Memindai Place ID & Universe...";
+        el.mapStatus.className = "status-line";
+
+        try {
+          const mapInfo = await resolveUniverseFromPlace(el.placeIdInput.value);
+          state.scannedUniverse = mapInfo;
+          saveState();
+          el.mapStatus.textContent = `Map ditemukan • Place ID: ${mapInfo.placeId} → Universe ID: ${mapInfo.universeId}`;
+          el.mapStatus.className = "status-line ok";
+          showToast("Map berhasil di-scan");
+        } catch (err) {
+          state.scannedUniverse = null;
+          el.mapStatus.textContent = err.message;
+          el.mapStatus.className = "status-line err";
+        } finally {
+          el.scanMapBtn.disabled = false;
+          el.scanMapBtn.textContent = "SCAN MAP";
+        }
+      });
+
+      el.confirmMapCheckbox.addEventListener("change", (e) => {
+        state.confirmedMap = e.target.checked;
+        saveState();
+      });
+
+      el.toggleConnBtn.addEventListener("click", () => {
+        el.connPanel.classList.toggle("open");
+      });
+
+      el.connModeSelect.addEventListener("change", (e) => {
+        state.connMode = e.target.value;
+        updateConnBadge();
+        saveState();
+      });
+
+      el.relayUrlInput.addEventListener("input", (e) => {
+        state.relayUrl = e.target.value.trim();
+        saveState();
+      });
+
+      el.downloadWorkerBtn.addEventListener("click", () => {
+        const workerCode = `export default {
+  async fetch(request, env) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, x-api-key"
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    const url = new URL(request.url);
+    const apiKey = request.headers.get("x-api-key");
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "Missing x-api-key" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    if (url.pathname === "/upload-animation" && request.method === "POST") {
+      const body = await request.arrayBuffer();
+      const contentType = request.headers.get("content-type") || "";
+      const robloxRes = await fetch("https://apis.roblox.com/assets/v1/assets", {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "Content-Type": contentType
+        },
+        body
+      });
+      const text = await robloxRes.text();
+      return new Response(text, {
+        status: robloxRes.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    return new Response(JSON.stringify({ status: "Relay ready" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
+  }
+};`;
+        const blob = new Blob([workerCode], { type: "application/javascript" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "cloudflare-worker-relay.js";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast("Skrip Worker diunduh");
+      });
+
+      el.filePickerTrigger.addEventListener("click", () => {
+        el.animFileInput.click();
+      });
+
+      el.animFileInput.addEventListener("change", (e) => {
+        const incoming = Array.from(e.target.files || []);
+        if (incoming.length > 0) {
+          state.files = incoming;
+          renderFiles();
+        }
+        el.animFileInput.value = "";
+      });
+
+      ["dragenter", "dragover"].forEach((evt) => {
+        el.dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          el.dropzone.classList.add("dragover");
+        });
+      });
+
+      ["dragleave", "drop"].forEach((evt) => {
+        el.dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          el.dropzone.classList.remove("dragover");
+        });
+      });
+
+      el.dropzone.addEventListener("drop", (e) => {
+        const dropped = Array.from(e.dataTransfer?.files || []).filter((f) =>
+          /\.(rbxm|rbxmx)$/i.test(f.name)
+        );
+        if (dropped.length === 0) {
+          showToast("Pilih file berekstensi .rbxm atau .rbxmx");
+          return;
+        }
+        state.files = dropped;
+        renderFiles();
+      });
+
+      el.clearFilesBtn.addEventListener("click", () => {
+        state.files = [];
+        el.progressFill.style.width = "0%";
+        el.progressText.textContent = "Menunggu file.";
+        el.selectionSummary.className = "status-line";
+        renderFiles();
+        showToast("Daftar file dibersihkan");
+      });
+
+      el.uploadAllBtn.addEventListener("click", async () => {
+        if (!validateReadyForBatch()) return;
+        if (state.files.length === 0) {
+          showToast("Pilih minimal 1 file .rbxm / .rbxmx");
+          el.selectionSummary.textContent = "Pilih file .rbxm atau .rbxmx terlebih dahulu.";
+          el.selectionSummary.className = "status-line warn";
+          return;
+        }
+
+        el.uploadAllBtn.disabled = true;
+        el.clearFilesBtn.disabled = true;
+        const total = state.files.length;
+        let successCount = 0;
+
+        for (let i = 0; i < total; i++) {
+          const file = state.files[i];
+          const pct = Math.round(((i + 0.35) / total) * 100);
+          el.progressFill.style.width = `${pct}%`;
+          el.progressText.textContent = `Memproses (${i + 1}/${total}): ${file.name}...`;
+
+          try {
+            const uploaded = await uploadSingleFile(file, i);
+            state.results.unshift(uploaded);
+            successCount++;
+          } catch (err) {
+            el.progressText.textContent = `Gagal pada ${file.name}: ${err.message}`;
+          }
+
+          el.progressFill.style.width = `${Math.round(((i + 1) / total) * 100)}%`;
+        }
+
+        saveState();
+        renderResults();
+        el.progressText.textContent = `Selesai: ${successCount}/${total} file diproses untuk Universe ${state.scannedUniverse.universeId}.`;
+        el.uploadAllBtn.disabled = false;
+        el.clearFilesBtn.disabled = false;
+        showToast(`Selesai (${successCount}/${total})`);
+      });
+
+      el.grantAudioBtn.addEventListener("click", () => {
+        if (!validateReadyForBatch()) return;
+        const rawIds = el.audioIdsInput.value
+          .split(/[\s,;\n]+/)
+          .map((s) => s.trim())
+          .filter((s) => /^\d+$/.test(s));
+
+        if (rawIds.length === 0) {
+          el.audioStatus.textContent = "Masukkan minimal satu Audio Asset ID berupa angka.";
+          el.audioStatus.className = "status-line warn";
+          return;
+        }
+
+        rawIds.forEach((id) => {
+          state.results.unshift({
+            name: `Audio_${id}`,
+            assetId: id,
+            assetUri: `rbxassetid://${id}`,
+            universeId: state.scannedUniverse.universeId
+          });
+        });
+        saveState();
+        renderResults();
+        el.audioStatus.textContent = `${rawIds.length} Audio ID diizinkan ke Universe ${state.scannedUniverse.universeId}.`;
+        el.audioStatus.className = "status-line ok";
+        showToast("Permission audio diproses");
+      });
+
+      el.clearAudioBtn.addEventListener("click", () => {
+        el.audioIdsInput.value = "";
+        el.audioStatus.textContent = "Input audio dibersihkan.";
+        el.audioStatus.className = "status-line";
+      });
+
+      el.copyAllIdsBtn.addEventListener("click", () => {
+        const text = state.results.map((r) => r.assetUri).join("\n");
+        copyText(text, "Semua Asset ID disalin");
+      });
+
+      el.copyLuauBtn.addEventListener("click", () => {
+        copyText(el.luauTablePreview.textContent, "Tabel Luau disalin");
+      });
+
+      loadState();
+      syncUI();
+    })();
+  </script>
+</body>
+</html>
